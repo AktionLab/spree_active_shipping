@@ -1,5 +1,6 @@
 require 'spree_core'
 require 'active_shipping'
+require 'digest/sha1'
 
 module ActiveShippingExtension
   class Engine < Rails::Engine

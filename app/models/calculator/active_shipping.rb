@@ -128,6 +128,9 @@ class Calculator::ActiveShipping < Calculator
 
   def cache_key(order)
     addr = order.ship_address
-    @cache_key = "#{carrier.name}-#{order.number}-#{addr.country.iso}-#{addr.state ? addr.state.abbr : addr.state_name}-#{addr.city}-#{addr.zipcode}-#{order.line_items.map {|li| li.variant_id.to_s + "_" + li.quantity.to_s }.join("|")}".gsub(" ","")
+    key = Digest::SHA1.new
+    key.update "#{carrier.name}-#{order.number}-#{addr.country.iso}-#{addr.state ? addr.state.abbr : addr.state_name}-#{addr.city}-#{addr.zipcode}"
+    key.update "#{order.line_items.map {|li| li.variant_id.to_s + "_" + li.quantity.to_s }.join("|")}".gsub(" ","")
+    @cache_key = key.hexdigest
   end
 end
